@@ -1,3 +1,5 @@
+The secret word is "foobar"
+
 
 # Haikus for June
 
