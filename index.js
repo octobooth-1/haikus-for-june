@@ -7,15 +7,29 @@ const port = process.env.PORT || 3000;
 app.use(express.static('public'))
 app.set('view engine', 'ejs');
 
+const renderHaikus = (res, selectedHaikus) => {
+  res.render('index', { haikus: selectedHaikus });
+};
+
+const getRandomHaiku = () => {
+  return haikus[Math.floor(Math.random() * haikus.length)];
+};
+
 app.get('/', (req, res) => {
-  res.render('index', {haikus: haikus});
+  renderHaikus(res, haikus);
+});
+
+//get a random haiku by GET request
+app.get('/random', (req, res) => {
+  const randomHaiku = getRandomHaiku();
+  renderHaikus(res, [randomHaiku]);
 });
 
 //get haiku by id
 app.get('/:id', (req, res) => {
   const haiku = haikus[req.params.id];
   if (haiku) {
-    res.render('index', {haikus: [haiku]});
+    renderHaikus(res, [haiku]);
   } else {
     res.status(404).send('Haiku not found');
   }
@@ -23,8 +37,8 @@ app.get('/:id', (req, res) => {
 
 //get a random haiku by POST request
 app.post('/random', (req, res) => {
-  const randomHaiku = haikus[Math.floor(Math.random() * haikus.length)];
-  res.render('index', {haikus: [randomHaiku]});
+  const randomHaiku = getRandomHaiku();
+  renderHaikus(res, [randomHaiku]);
 });
 
 // Export the app
